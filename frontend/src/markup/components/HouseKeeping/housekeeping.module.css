@@ -1,0 +1,103 @@
+.main-content {
+    padding: 20px;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+  }
+  
+  .cursor-pointer {
+    cursor: pointer;
+  }
+  
+  .card-custom {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #e9ecef;
+  }
+  
+  /* Search Box */
+  .search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .search-wrapper i {
+    position: absolute;
+    left: 12px;
+    color: #6c757d;
+  }
+  
+  .search-input {
+    padding-left: 36px;
+    background-color: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    font-size: 0.85rem;
+    border-radius: 8px;
+  }
+  
+  /* Filter Buttons */
+  .btn-filter {
+    background-color: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    color: #333;
+    font-size: 0.85rem;
+    padding: 6px 14px;
+    border-radius: 8px;
+  }
+  
+  /* Status Badges */
+  .badge-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  
+  .badge-in-progress {
+    background-color: #fff8e1;
+    color: #f57c00;
+  }
+  
+  .badge-ready {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+  }
+  
+  .badge-needs-cleaning {
+    background-color: #ffebee;
+    color: #c62828;
+  }
+  
+  .badge-inspection {
+    background-color: #e3f2fd;
+    color: #1976d2;
+  }
+  
+  /* Priority Indicators */
+  .priority-text {
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+  
+  .priority-high {
+    color: #d32f2f;
+    font-size: 0.5rem;
+    vertical-align: middle;
+  }
+  
+  .priority-medium {
+    color: #f57c00;
+    font-size: 0.5rem;
+    vertical-align: middle;
+  }
+  
+  .priority-low {
+    color: #388e3c;
+    font-size: 0.5rem;
+    vertical-align: middle;
+  }

@@ -1,0 +1,110 @@
+.main-content {
+    padding: 20px;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+  }
+  
+  .cursor-pointer {
+    cursor: pointer;
+  }
+  
+  /* Button Styles */
+  .btn-lime {
+    background-color: rgb(252, 201, 131);
+    color: #1b1b1b;
+    border: none;
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+  .btn-lime:hover {
+    background-color: rgb(252, 201, 131);
+    color: #000;
+  }
+  
+  .btn-filter-dropdown {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    color: #333;
+    font-size: 0.85rem;
+  }
+  
+  /* Room Cards (Left Column) */
+  .room-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    border: 1px solid #e9ecef;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+  
+  .room-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+  
+.active {
+    border: 2px solid rgb(250, 189, 104);
+    background-color: #fcfdfe;
+  }
+  
+  .room-thumb {
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  
+  /* Status Badges */
+  .badge-Available, .badge-Checked-Out, .badge-Cancelled{
+    background-color: #e8f5e9;
+    color: rgb(254, 167, 44);
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-weight: 600;
+  }
+  
+  .badge-Occupied, .badge-Maintenance, .badge-checkin{
+    background-color: #ffebee;
+    color: #c62828;
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-weight: 600;
+  }
+  
+  /* Detail Card (Right Column) */
+  .detail-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #e9ecef;
+  }
+  
+  .main-detail-img {
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  
+  .sub-detail-img {
+    width: 100%;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  
+  /* Facility & Amenities List */
+  .facility-item {
+    font-size: 0.8rem;
+    color: #495057;
+    display: flex;
+    align-items: center;
+  }
+  
+  .check-icon {
+    color: rgb(252, 201, 131);
+    margin-right: 6px;
+  }
