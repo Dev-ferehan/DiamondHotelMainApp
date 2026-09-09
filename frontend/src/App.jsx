@@ -14,6 +14,7 @@ import AdminAddRoom from "./markup/pages/admin/AdminAddRoom.jsx";
 import AdminMessages from "../src/markup/pages/admin/AdminMessages.jsx";
 import AdminHouseKeeping from "../src/markup/pages/admin/AdminHouseKeeping.jsx";
 import AdminInventory from "../src/markup/pages/admin/AdminInventory.jsx";
+import AddGuest from "./markup/components/AddGuest/AddGuest.jsx";
 function App() {
   useEffect(() => {
     if (window.WOW) {
@@ -26,6 +27,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/" element={<Home />} />
         <Route path="/reservation" element={<Reservation />} />
+        <Route path="/add-guest" element={<AddGuest />} />
         <Route path='/room' element={<Room/>}/>
         <Route path='/message' element={<AdminMessages/>}/>
         <Route path='/housekeeping' element={<AdminHouseKeeping/>}/>

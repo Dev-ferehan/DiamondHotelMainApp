@@ -141,12 +141,15 @@ function AdminRoom() {
                     </span>
                     <div className="d-flex align-items-center gap-2">
                       <h4 className="fw-bold m-0">{selectedRoom?.room_type}</h4>
-                      <span className={styles[`badge-${selectedRoom?.room_status}`]}>
+                      <span
+                        className={styles[`badge-${selectedRoom?.room_status}`]}
+                      >
                         {selectedRoom?.room_status}
                       </span>
                     </div>
                     <small className="text-muted">
-                      Occupied: <strong>18/{selectedRoom?.total_rooms} Rooms</strong>
+                      Occupied:{" "}
+                      <strong>18/{selectedRoom?.total_rooms} Rooms</strong>
                     </small>
                   </div>
                   <button
@@ -196,11 +199,12 @@ function AdminRoom() {
                             }}
                           />
                         ))}
-                   
+
                         <button
                           className={`btn ${styles["btn-lime"]} btn-sm w-100 fw-bold mt-auto`}
                           style={{ fontSize: "0.75rem" }}
-                        >View All
+                        >
+                          View All
                         </button>
                       </div>
                     </div>

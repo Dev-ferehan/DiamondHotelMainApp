@@ -1,12 +1,35 @@
-import React from 'react'
-import styles from './reservation.module.css'
-import { Link } from 'react-router-dom'
+import React, { useEffect, useState } from "react";
+import styles from "./reservation.module.css";
+import { Link } from "react-router-dom";
+import { getGuest } from "../../../services/Reservation.service.js";
 // import "../../../assets/css/admin/styles.css";
-
 function Reservation() {
+  const [selectedGuestId, setSelectedGuestId] = useState(null);
+  const [guests, setGuests] = useState([]);
+  const [currentGuest, setCurrentGuest] = useState({});
+  const [error, setError] = useState(null);
+  useEffect(() => {
+    const fetchGuest = async () => {
+      try {
+        const response = await getGuest();
+
+        const data = Array.isArray(response) ? response : [response];
+
+        setGuests(data);
+        if (data.length > 0) {
+          setCurrentGuest(data[0]);
+        }
+      } catch (err) {
+        console.error("Error fetching guest:", err);
+        setError("Failed to fetch guest details.");
+      }
+    };
+    fetchGuest();
+  }, []);
+
   return (
     <>
-   <div className={styles.mainContent}>
+      <div className={styles.mainContent}>
         <div className="d-flex justify-content-between align-items-center mb-3">
           <div>
             <small className="text-muted">
@@ -57,8 +80,10 @@ function Reservation() {
                   alt="Guest"
                 />
                 <div>
-                  <h5 className="fw-bold mb-0">Angus Copper</h5>
-                  <small className="text-muted">G011-987654321</small>
+                  <h5 className="fw-bold mb-0">{currentGuest?.full_name}</h5>
+                  <small className="text-muted">
+                    {currentGuest?.phone_number}
+                  </small>
                 </div>
               </div>
 
@@ -73,7 +98,8 @@ function Reservation() {
                   className="d-flex align-items-center gap-2 text-muted"
                   style={{ fontSize: "0.85rem" }}
                 >
-                  <i className="bi bi-envelope"></i> angus.copper@example.com
+                  <i className="bi bi-envelope"></i>
+                  {currentGuest?.email}
                 </div>
               </div>
 
@@ -87,22 +113,40 @@ function Reservation() {
                 </div>
                 <div className="col-6">
                   <div className={styles.textLabel}>Gender</div>
-                  <div className={styles.textVal}>Male</div>
+                  <div className={styles.textVal}>{currentGuest?.gender}</div>
                 </div>
                 <div className="col-6">
                   <div className={styles.textLabel}>Nationality</div>
-                  <div className={styles.textVal}>American</div>
+                  <div className={styles.textVal}>
+                    {currentGuest?.nationality}
+                  </div>
                 </div>
                 <div className="col-6">
-                  <div className={styles.textLabel}>Passport No.</div>
-                  <div className={styles.textVal}>A12345678</div>
+                  <div className={styles.textLabel}>
+                    {currentGuest?.id_type}
+                  </div>
+                  <div className={styles.textVal}>
+                    {currentGuest?.id_number}
+                  </div>
                 </div>
               </div>
 
               <hr className="my-3" style={{ color: "#eee" }} />
 
-              <h6 className="fw-bold mb-2">Loyalty Program</h6>
-              <div className="row g-2">
+              <h6 className="fw-bold mb-2">Guest ID</h6>
+              <div className="row">
+                {currentGuest?.document_paths?.map((url, i) => (
+                  <div key={i} className="col-6 ">
+                    <img
+                      src={url}
+                      className={styles.guestID}
+                      alt={`Guest ID`}
+                    />
+                  </div>
+                ))}
+              </div>
+
+              {/* <div className="row g-2">
                 <div className="col-6">
                   <div className={styles.textLabel}>Membership Status</div>
                   <div>
@@ -119,7 +163,7 @@ function Reservation() {
                   <div className={styles.textLabel}>Points Balance</div>
                   <div className={styles.textVal}>15,000 points</div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
 
@@ -129,45 +173,56 @@ function Reservation() {
                 <div>
                   <h6 className="fw-bold mb-1">Booking Info</h6>
                   <span className={styles.badgeStatus}>
-                    <i className="bi bi-check-circle-fill me-1"></i> Booking
-                    Confirmed
+                    <i className="bi bi-check-circle-fill me-1"></i> Booking{" "}
+                    {currentGuest?.status}
                   </span>
                 </div>
                 <i className="bi bi-three-dots text-muted"></i>
               </div>
 
-              <h4 className="fw-bold mb-1">Booking ID: LG-B00109</h4>
+              <h4 className="fw-bold mb-1">
+                Booking ID: {currentGuest?.booking_code}
+              </h4>
               <small className="text-muted d-block mb-3">
-                June 17, 2024, 9:46 AM
+                {currentGuest?.created_at}
               </small>
 
               <div className="row g-3 mb-3">
                 <div className="col-3">
                   <div className={styles.textLabel}>Room Type</div>
-                  <div className={styles.textVal}>Deluxe</div>
+                  <div className={styles.textVal}>
+                    {currentGuest?.room_type_name}
+                  </div>
                 </div>
                 <div className="col-3">
                   <div className={styles.textLabel}>Room Number</div>
-                  <div className={styles.textVal}>101</div>
+                  <div className={styles.textVal}>
+                    {currentGuest?.room_number}
+                  </div>
                 </div>
                 <div className="col-3">
                   <div className={styles.textLabel}>Price</div>
                   <div className={styles.textVal}>
-                    $150 <span className="fw-normal text-muted">/night</span>
+                    ${currentGuest?.total_amount}{" "}
+                    <span className="fw-normal text-muted">/night</span>
                   </div>
                 </div>
                 <div className="col-3">
                   <div className={styles.textLabel}>Guests</div>
-                  <div className={styles.textVal}>2 Adults</div>
+                  <div className={styles.textVal}>
+                    {currentGuest?.guests_count} Adults
+                  </div>
                 </div>
                 <div className="col-3">
                   <div className={styles.textLabel}>Check In</div>
-                  <div className={styles.textVal}>June 19, 2024</div>
+                  <div className={styles.textVal}>{currentGuest?.check_in}</div>
                   <small className="text-muted">1:45 PM</small>
                 </div>
                 <div className="col-3">
                   <div className={styles.textLabel}>Check Out</div>
-                  <div className={styles.textVal}>June 22, 2024</div>
+                  <div className={styles.textVal}>
+                    {currentGuest?.check_out}
+                  </div>
                   <small className="text-muted">11:45 AM</small>
                 </div>
                 <div className="col-3">
@@ -179,8 +234,7 @@ function Reservation() {
               <div className="p-2 bg-light rounded mb-3">
                 <div className={styles.textLabel}>Notes</div>
                 <div style={{ fontSize: "0.8rem" }} className="text-dark">
-                  Guest requested extra pillows and towels. Ensure room service
-                  is available upon arrival.
+                  {currentGuest?.notes}
                 </div>
               </div>
 
@@ -200,7 +254,7 @@ function Reservation() {
                       </Link>
                     </div>
                     <img
-                      src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=500"
+                      src={currentGuest?.room_image}
                       className={styles.roomImg}
                       alt="Room"
                     />
@@ -209,13 +263,16 @@ function Reservation() {
                       style={{ fontSize: "0.75rem" }}
                     >
                       <span>
-                        <i className="bi bi-aspect-ratio me-1"></i> 35 m²
+                        <i className="bi bi-aspect-ratio me-1"></i>{" "}
+                        {currentGuest?.size_m2} m²
                       </span>
                       <span>
-                        <i className="bi bi-border-outer me-1"></i> King Bed
+                        <i className="bi bi-border-outer me-1"></i>{" "}
+                        {currentGuest?.bed_type} Bed
                       </span>
                       <span>
-                        <i className="bi bi-people me-1"></i> 2 guests
+                        <i className="bi bi-people me-1"></i>{" "}
+                        {currentGuest?.max_guests} guests
                       </span>
                     </div>
                   </div>
@@ -231,7 +288,7 @@ function Reservation() {
                         className="badge bg-success"
                         style={{ fontSize: "0.65rem" }}
                       >
-                        Paid
+                        {currentGuest?.payment_status}
                       </span>
                     </div>
                     <div
@@ -239,7 +296,7 @@ function Reservation() {
                       style={{ fontSize: "0.8rem" }}
                     >
                       <span>Room and offer</span>
-                      <span>$450.00</span>
+                      <span>${currentGuest?.price_per_night}</span>
                     </div>
                     <div
                       className="d-flex justify-content-between text-muted mb-1"
@@ -268,7 +325,7 @@ function Reservation() {
                       style={{ fontSize: "0.9rem" }}
                     >
                       <span>Total Price</span>
-                      <span>$535.50</span>
+                      <span>{currentGuest?.total_amount}</span>
                     </div>
                   </div>
 
@@ -295,9 +352,12 @@ function Reservation() {
                     className="form-control form-control-sm"
                     placeholder="Search guest, status, etc"
                   />
-                  <button className="btn btn-sm btn-success text-nowrap">
+                  <Link
+                    to="/add-guest"
+                    className="btn btn-sm btn-success text-nowrap"
+                  >
                     add new guest
-                  </button>
+                  </Link>
                 </div>
               </div>
 
@@ -316,38 +376,55 @@ function Reservation() {
                       <th></th>
                     </tr>
                   </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <img
-                          src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=100"
-                          className={styles.tableImg}
-                          alt="Room"
-                        />
-                      </td>
-                      <td className="fw-bold">LG-B00109</td>
-                      <td>
-                        June 09, 2028 <br />
-                        <small className="text-muted">9:08 AM</small>
-                      </td>
-                      <td>
-                        <span className={styles.badgeCustom}>Deluxe</span>
-                      </td>
-                      <td>Room 101</td>
-                      <td>
-                        June 19, 2024 <br />
-                        <small className="text-muted">1:45 PM</small>
-                      </td>
-                      <td>
-                        June 21, 2024 <br />
-                        <small className="text-muted">11:45 AM</small>
-                      </td>
-                      <td>2 Guests</td>
-                      <td>
-                        <i className="bi bi-three-dots text-muted"></i>
-                      </td>
-                    </tr>
-                  </tbody>
+                  {guests.map((guest) => {
+                    const guestUniqueId = guest?.booking_code;
+                    const isSelected = selectedGuestId === guestUniqueId;
+                    return (
+                      <tbody
+                        onClick={() => {
+                          setSelectedGuestId(guestUniqueId);
+                          setCurrentGuest(guest);
+                        }}
+                        style={{
+                          cursor: "pointer",
+                          backgroundColor: isSelected ? "#c9c9c9" : "#ffffff",
+                        }}
+                      >
+                        <tr>
+                          <td>
+                            <img
+                              src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=100"
+                              className={styles.tableImg}
+                              alt="Room"
+                            />
+                          </td>
+                          <td className="fw-bold">{guest?.booking_code}</td>
+                          <td>
+                            {guest?.booking_created_at} <br />
+                            <small className="text-muted">9:08 AM</small>
+                          </td>
+                          <td>
+                            <span className={styles.badgeCustom}>
+                              {guest?.room_type_name}
+                            </span>
+                          </td>
+                          <td>Room {guest?.room_number}</td>
+                          <td>
+                            {guest?.check_in} <br />
+                            <small className="text-muted">1:45 PM</small>
+                          </td>
+                          <td>
+                            {guest?.check_out} <br />
+                            <small className="text-muted">11:45 AM</small>
+                          </td>
+                          <td>{guest?.guests_count} Guests</td>
+                          <td>
+                            <i className="bi bi-three-dots text-muted"></i>
+                          </td>
+                        </tr>
+                      </tbody>
+                    );
+                  })}
                 </table>
               </div>
             </div>
@@ -355,7 +432,7 @@ function Reservation() {
         </div>
       </div>
     </>
-  )
+  );
 }
 
-export default Reservation
+export default Reservation;

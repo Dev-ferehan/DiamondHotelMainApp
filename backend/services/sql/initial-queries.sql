@@ -314,3 +314,75 @@ ALTER TABLE `room_images`
 COMMIT;
 
 
+
+
+
+
+
+
+-- RESERVATIONS TABLE
+
+
+
+
+
+
+
+
+
+
+
+CREATE TABLE `guests` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `full_name` VARCHAR(150) NOT NULL,
+  `phone_number` VARCHAR(50) NOT NULL,
+  `email` VARCHAR(150) DEFAULT NULL,
+  `loyalty_points` INT(11) DEFAULT 0,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `guest_documents` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `guest_id` INT(11) NOT NULL,
+  `id_type` VARCHAR(50) NOT NULL,
+  `id_number` VARCHAR(100) NOT NULL,
+  `document_path` VARCHAR(255) DEFAULT NULL, 
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_number` (`id_number`),
+  CONSTRAINT `fk_docs_guests` FOREIGN KEY (`guest_id`) REFERENCES `guests` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `bookings` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `booking_code` VARCHAR(50) NOT NULL,
+  `guest_id` INT(11) NOT NULL,
+  `room_id` INT(11) NOT NULL,
+  `status` ENUM('Pending', 'Confirmed', 'Checked In', 'Checked Out', 'Cancelled') DEFAULT 'Confirmed',
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `booking_code` (`booking_code`),
+  CONSTRAINT `fk_bookings_guests` FOREIGN KEY (`guest_id`) REFERENCES `guests` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_bookings_rooms` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `booking_details` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `booking_id` INT(11) NOT NULL,
+  `check_in` DATETIME NOT NULL,
+  `check_out` DATETIME NOT NULL,
+  `special_requests` TEXT DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_details_bookings` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+CREATE TABLE `payments` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `booking_id` INT(11) NOT NULL,
+  `total_amount` DECIMAL(10,2) NOT NULL, 
+  `payment_status` ENUM('Paid', 'Pending', 'Partially Paid') DEFAULT 'Paid',
+  `payment_method` VARCHAR(50) DEFAULT 'Card',
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_payments_bookings` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

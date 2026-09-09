@@ -53,9 +53,20 @@
   border-radius: 10px;
 }
 
+.guestID {
+  width: 100%;
+  height: 130px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
 .tableImg {
   width: 44px;
   height: 44px;
   object-fit: cover;
   border-radius: 8px;
 }
+/* .tbody-click:hover {
+  cursor: pointer;
+  background-color: #c9c9c9;
+} */
