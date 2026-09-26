@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect ,useState } from "react";
 import SideBar from "../../components/SideBar/SideBar";
+import { getGuest } from "../../../services/Reservation.service.js";
 import { Link } from "react-router-dom";
 import {
   Chart as ChartJS,
@@ -27,6 +28,19 @@ ChartJS.register(
 );
 
 function Dashboard() {
+const [guests, setGuests] = useState([]);
+  useEffect(() => {
+const fetchData = async () => {
+
+  const response = await getGuest();
+setGuests(response);
+
+
+}
+
+fetchData();
+  }, [])
+
   const wrapperStyle = {
     display: "flex",
     minHeight: "100vh",
@@ -260,48 +274,54 @@ function Dashboard() {
                         <th className="pe-3">Status</th>
                       </tr>
                     </thead>
-                    <tbody>
-                      <tr>
-                        <td className="ps-3 fw-semibold">BK-1001</td>
-                        <td>Abebe Bikila</td>
-                        <td>Deluxe Suite</td>
-                        <td>101</td>
-                        <td>2026-09-01 - 2026-09-05</td>
-                        <td className="pe-3"><span className="badge bg-success">Checked-In</span></td>
-                      </tr>
-                      <tr>
-                        <td className="ps-3 fw-semibold">BK-1002</td>
-                        <td>Tigist Assefa</td>
-                        <td>Single Room</td>
-                        <td>102</td>
-                        <td>2026-09-01 - 2026-09-03</td>
-                        <td className="pe-3"><span className="badge bg-warning text-dark">Reserved</span></td>
-                      </tr>
-                      <tr>
-                        <td className="ps-3 fw-semibold">BK-1003</td>
-                        <td>Yared Lemma</td>
-                        <td>Double Room</td>
-                        <td>201</td>
-                        <td>2026-08-28 - 2026-09-02</td>
-                        <td className="pe-3"><span className="badge bg-danger">Checked-Out</span></td>
-                      </tr>
-                      <tr>
-                        <td className="ps-3 fw-semibold">BK-1004</td>
-                        <td>Bethlehem Tilahun</td>
-                        <td>Executive Suite</td>
-                        <td>305</td>
-                        <td>2026-09-02 - 2026-09-08</td>
-                        <td className="pe-3"><span className="badge bg-warning text-dark">Reserved</span></td>
-                      </tr>
-                      <tr>
-                        <td className="ps-3 fw-semibold">BK-1005</td>
-                        <td>Dawit Tsige</td>
-                        <td>Standard Room</td>
-                        <td>104</td>
-                        <td>2026-08-30 - 2026-09-04</td>
-                        <td className="pe-3"><span className="badge bg-success">Checked-In</span></td>
-                      </tr>
-                    </tbody>
+                    {
+                      guests.map((guest) => {
+                    
+                   return <tbody>
+                        <tr>
+                          <td className="ps-3 fw-semibold">{guest?.booking_code}</td>
+                          <td>{guest?.full_name}</td>
+                          <td>{guest?.room_type_name}</td>
+                          <td>{guest?.room_number}</td>
+                          <td>{guest?.check_in} - {guest?.check_out}</td>
+                          <td className="pe-3"><span className="badge bg-success">{guest?. booking_status}</span></td>
+                        </tr>
+                        {/* <tr>
+                          <td className="ps-3 fw-semibold">BK-1002</td>
+                          <td>Tigist Assefa</td>
+                          <td>Single Room</td>
+                          <td>102</td>
+                          <td>2026-09-01 - 2026-09-03</td>
+                          <td className="pe-3"><span className="badge bg-warning text-dark">Reserved</span></td>
+                        </tr>
+                        <tr>
+                          <td className="ps-3 fw-semibold">BK-1003</td>
+                          <td>Yared Lemma</td>
+                          <td>Double Room</td>
+                          <td>201</td>
+                          <td>2026-08-28 - 2026-09-02</td>
+                          <td className="pe-3"><span className="badge bg-danger">Checked-Out</span></td>
+                        </tr>
+                        <tr>
+                          <td className="ps-3 fw-semibold">BK-1004</td>
+                          <td>Bethlehem Tilahun</td>
+                          <td>Executive Suite</td>
+                          <td>305</td>
+                          <td>2026-09-02 - 2026-09-08</td>
+                          <td className="pe-3"><span className="badge bg-warning text-dark">Reserved</span></td>
+                        </tr>
+                        <tr>
+                          <td className="ps-3 fw-semibold">BK-1005</td>
+                          <td>Dawit Tsige</td>
+                          <td>Standard Room</td>
+                          <td>104</td>
+                          <td>2026-08-30 - 2026-09-04</td>
+                          <td className="pe-3"><span className="badge bg-success">Checked-In</span></td>
+                        </tr> */}
+                      </tbody>}
+                     )
+                      }
+                  
                   </table>
                 </div>
               </div>

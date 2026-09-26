@@ -238,3 +238,34 @@ CREATE INDEX idx_reservations_guest ON reservations(guest_id);
 CREATE INDEX idx_reservations_status ON reservations(reservation_status);
 CREATE INDEX idx_rooms_housekeeping ON rooms(housekeeping_status, priority);
 CREATE INDEX idx_inventory_search ON inventory_items(item_name, category_id);
+
+
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `full_name` VARCHAR(100) NOT NULL,
+  `email` VARCHAR(100) NOT NULL UNIQUE,
+  `password` VARCHAR(255) NOT NULL,
+  `role` ENUM('admin', 'receptionist') NOT NULL DEFAULT 'receptionist'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `staff_profiles` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `user_id` INT NOT NULL UNIQUE,
+  `phone_number` VARCHAR(20) NOT NULL,
+  `address` VARCHAR(255) DEFAULT NULL,
+  `gender` ENUM('Male', 'Female') DEFAULT NULL,
+  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+CREATE TABLE IF NOT EXISTS ` customer` (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    phone_number VARCHAR(20) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(20) DEFAULT 'customer',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

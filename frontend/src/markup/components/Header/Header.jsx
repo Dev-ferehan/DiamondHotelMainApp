@@ -1,25 +1,24 @@
 import React from "react";
 // import { Link } from "react-router-dom";
-import { HashLink as Link  } from 'react-router-hash-link';
+import { HashLink as Link } from "react-router-hash-link";
+import { NavDropdown } from "react-bootstrap";
 function Header() {
   return (
     <div>
-
-
-           {/* <!-- Spinner Start --> */}
-        {/* <div id="spinner"
+      {/* <!-- Spinner Start --> */}
+      {/* <div id="spinner"
             className="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
             <div className="spinner-border text-primary" style={{ width:'3rem' , height:'3rem'}} role="status">
                 <span className="sr-only">Loading...</span>
             </div>
         </div> */}
-        {/* <!-- Spinner End --> */}
+      {/* <!-- Spinner End --> */}
       {/* <!-- Header Start --> */}
       <div className="container-fluid bg-dark px-0" id="top">
         <div className="row gx-0">
           <div className="col-lg-3 bg-dark d-none d-lg-block">
             <Link
-              to="index.html"
+              to="/"
               className="navbar-brand w-100 h-100 m-0 p-0 d-flex align-items-center justify-content-center"
             >
               <h1 className="m-0 text-primary text-uppercase">Diamond</h1>
@@ -58,7 +57,7 @@ function Header() {
               </div>
             </div>
             <nav className="navbar navbar-expand-lg bg-dark navbar-dark p-3 p-lg-0">
-              <Link to="index.html" className="navbar-brand d-block d-lg-none">
+              <Link to="/index.html" className="navbar-brand d-block d-lg-none">
                 <h1 className="m-0 text-primary text-uppercase">Diamond</h1>
               </Link>
               <button
@@ -77,31 +76,45 @@ function Header() {
                   <Link to="/" className="nav-item nav-link active">
                     Home
                   </Link>
-                  <Link smooth to="/#about-section" className="nav-item nav-link">
+                  <Link
+                    smooth
+                    to="/#about-section"
+                    className="nav-item nav-link"
+                  >
                     About
                   </Link>
-                  <Link smooth to="/#service-section" className="nav-item nav-link">
+                  <Link
+                    smooth
+                    to="/#service-section"
+                    className="nav-item nav-link"
+                  >
                     Services
                   </Link>
-                  <Link smooth to="/#room-section" className="nav-item nav-link">
+                  <Link
+                    smooth
+                    to="/#room-section"
+                    className="nav-item nav-link"
+                  >
                     Rooms
                   </Link>
                   <div className="nav-item dropdown">
-                    <Link
-                      to="#"
-                      className="nav-link dropdown-toggle"
-                      data-bs-toggle="dropdown"
+  
+  <NavDropdown
+                    title="Pages"
+                    id="pages-nav-dropdown"
+                    className="nav-item"
+                  >
+                    <NavDropdown.Item as={Link} to="/booking">
+                      Booking
+                    </NavDropdown.Item>
+                    <NavDropdown.Item
+                      as={Link}
+                      smooth
+                      to="/#testimonial-section"
                     >
-                      Pages
-                    </Link>
-                    <div className="dropdown-menu rounded-0 m-0">
-                      <Link to="/booking" className="dropdown-item">
-                        Booking
-                      </Link>
-                      <Link smooth to="/#testimonial-section" className="dropdown-item">
-                        Testimonial
-                      </Link>
-                    </div>
+                      Testimonial
+                    </NavDropdown.Item>
+                  </NavDropdown>
                   </div>
                   <Link to="/contact" className="nav-item nav-link">
                     Contact
@@ -119,8 +132,7 @@ function Header() {
         </div>
       </div>
       {/* <!-- Header End --> */}
-      </div>
-
+    </div>
   );
 }
 

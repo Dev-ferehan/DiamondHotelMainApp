@@ -97,7 +97,7 @@ console.log(bookingCode)
 };
 
 export const getGuestService = async () => {
-  console.log("get guest id:");
+  // console.log("get guest id:");
   // const guestID = 37;
 
   try {
@@ -156,7 +156,7 @@ ORDER BY b.created_at DESC;
     `;
 
     const result = await query(getGuestQuery);
-    console.log("guest info", result);
+    // console.log("guest info", result);
     return result;
   } catch (err) {
     console.log(err);

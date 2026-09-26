@@ -5,6 +5,7 @@ import router from "./routes/index.js";
 import cors from "cors";
 import multer from "multer";
 import uploadRoutes from "./routes/uploadRoutes.js";
+import registerRouter from "./routes/register.route.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
@@ -15,6 +16,7 @@ const app = express();
 app.use(express.json());
 app.use(sanitize.middleware);
 app.use(cors());
+app.use("/api", registerRouter);
 app.use("/api/admin", router);
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
