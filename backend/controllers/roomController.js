@@ -1,7 +1,6 @@
-import { addRoomService, checkRoomExit, getRoomsType } from "../services/roomService.js";
+import { addRoomService, checkRoomExit, getRoomsType, editRoomService } from "../services/roomService.js";
 
 export const addRoomController = async (req, res) => {
-  // check if the request body is not empty
   const RoomExit = await checkRoomExit(req.body.room_number);
   if (RoomExit.status == 200) {
     res.status(200).json({
@@ -40,3 +39,37 @@ export const getRoomsTypeController = async (req,res) => {
   }
  
 };
+
+
+
+export const editRoomsController=async(req,res)=>{
+    try {
+      const { id } = req.params; 
+      const roomData = req.body;
+console.log("hhhhhh",id,"data:::::::::::::::",roomData)
+      if (!id) {
+        return res.status(400).json({
+          success: false,
+          message: 'Room ID is required'
+        });
+      }
+
+      const result = await editRoomService.updateRoom(id, roomData);
+
+      return res.status(200).json({
+        success: true,
+        message: 'Room updated successfully',
+        data: result
+      });
+    } catch (error) {
+      console.error('Error in updateRoom controller:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Internal server error while updating room',
+        error: error.message
+      });
+    }
+  }
+
+
+

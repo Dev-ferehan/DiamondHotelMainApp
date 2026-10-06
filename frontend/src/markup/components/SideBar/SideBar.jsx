@@ -32,17 +32,17 @@ function SideBar() {
           </Link>
         </li>
 
-        <li className={currentPath.startsWith("/message") ? styles.active : ""}>
+        <li className={currentPath.startsWith("/messages") ? styles.active : ""}>
           <Link
-            to="/message"
+            to="/messages"
             className="d-flex justify-content-between align-items-center w-100"
           >
             <span>
               <i className="bi bi-chat-left-text me-2"></i> Messages
             </span>
-            <span className="badge bg-danger rounded-circle px-2 py-1">
+            {/* <span className="badge bg-danger rounded-circle px-2 py-1">
               5
-            </span>
+            </span> */}
           </Link>
         </li>
 
@@ -59,25 +59,25 @@ function SideBar() {
         </li>
 
         <li className={currentPath.startsWith("/calendar") ? styles.active : ""}>
-          <Link to="/calendar">
+          <Link to="#">
             <i className="bi bi-calendar3"></i> Calendar
           </Link>
         </li>
 
         <li className={currentPath.startsWith("/financial") ? styles.active : ""}>
-          <Link to="/financial">
+          <Link to="#">
             <i className="bi bi-cash-stack"></i> Financials
           </Link>
         </li>
 
         <li className={currentPath.startsWith("/review") ? styles.active : ""}>
-          <Link to="/review">
+          <Link to="#">
             <i className="bi bi-star"></i> Reviews
           </Link>
         </li>
 
         <li className={currentPath.startsWith("/concierge") ? styles.active : ""}>
-          <Link to="/concierge">
+          <Link to="#">
             <i className="bi bi-person-badge"></i> Concierge
           </Link>
         </li>

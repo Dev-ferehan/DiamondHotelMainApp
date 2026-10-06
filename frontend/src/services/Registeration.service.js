@@ -1,6 +1,6 @@
 export const registerCustomer = async (formData) => {
   try {
-    const url = "http://localhost:8000/api/register";
+    const url = "http://localhost:8000/api/admin/register";
     const reqOptions = {
       method: "POST",
       body: JSON.stringify(formData),

@@ -18,31 +18,7 @@ export const checkRoomExit = async (roomNumber) => {
     message: "Room does not exist",
   };
 };
-// {
-//     "room_type_id": 1,
-//     "room_number": "101A",
-//     "status": "Available",
-//     "price_per_night": 150.00,
-//     "size_m2": 35.00,
-//     "bed_type": "King Bed",
-//     "max_guests": 2,
-//     "title": "Deluxe King Room",
-// "short_description":"des",
-//     "full_description": "Spacious room with modern amenities...",
-//     "images": [
-//       {
-//         "image_url": "https://example.com/images/room-101a-1.jpg",
-//         "is_primary": true
-//       },
-//       {
-//         "image_url": "https://example.com/images/room-101a-2.jpg",
-//         "is_primary": false
-//       }
-//     ],
-//     "feature_ids": [1, 2],
-//     "facility_ids": [1, 2, 3],
-//     "amenity_ids": [1, 2]
-//   }
+//
 export const addRoomService = async (roomData) => {
   try {
     const {
@@ -210,3 +186,115 @@ GROUP BY r.id, rt.id;`;
   
   }
 };
+
+
+export const editRoomService=async(roomId, roomData)=>{
+    try {
+      const {
+        room_type_id,
+        room_number,
+        price_per_night,
+        status,
+        total_rooms,
+        size_m2,
+        bed_type,
+        max_guests,
+        title,
+        short_description,
+        full_description,
+        feature_ids = [],
+        facility_ids = [],
+        amenity_ids = [],
+        images = []
+      } = roomData;
+
+      const updateRoomQuery = `
+        UPDATE rooms 
+        SET 
+          room_type_id = ?, 
+          room_number = ?, 
+          price_per_night = ?, 
+          status = ?, 
+          total_rooms = ?, 
+          size_m2 = ?, 
+          bed_type = ?, 
+          max_guests = ?, 
+          title = ?, 
+          short_description = ?, 
+          full_description = ?
+        WHERE room_id = ?
+      `;
+
+      const [updateResult] = await query(updateRoomQuery, [
+        room_type_id || 1,
+        room_number,
+        price_per_night,
+        status,
+        total_rooms || 1,
+        size_m2,
+        bed_type,
+        max_guests,
+        title || short_description,
+        short_description,
+        full_description,
+        roomId
+      ]);
+
+      if (updateResult.affectedRows === 0) {
+        throw new Error('Room not found');
+      }
+
+      await query('DELETE FROM room_features WHERE room_id = ?', [roomId]);
+      await query('DELETE FROM room_facilities WHERE room_id = ?', [roomId]);
+      await query('DELETE FROM room_amenities WHERE room_id = ?', [roomId]);
+
+      if (feature_ids.length > 0) {
+        const featureValues = feature_ids.map(fId => [roomId, fId]);
+        await query(
+          'INSERT INTO room_features (room_id, feature_id) VALUES ?',
+          [featureValues]
+        );
+      }
+
+      if (facility_ids.length > 0) {
+        const facilityValues = facility_ids.map(fId => [roomId, fId]);
+        await query(
+          'INSERT INTO room_facilities (room_id, facility_id) VALUES ?',
+          [facilityValues]
+        );
+      }
+
+      if (amenity_ids.length > 0) {
+        const amenityValues = amenity_ids.map(aId => [roomId, aId]);
+        await query(
+          'INSERT INTO room_amenities (room_id, amenity_id) VALUES ?',
+          [amenityValues]
+        );
+      }
+
+      if (images && images.length > 0) {
+        await query('DELETE FROM room_images WHERE room_id = ?', [roomId]);
+
+        const imageValues = images.map((img) => [
+          roomId,
+          typeof img === 'string' ? img : img.image_url,
+          img.is_primary ? 1 : 0
+        ]);
+
+        await query(
+          'INSERT INTO room_images (room_id, image_url, is_primary) VALUES ?',
+          [imageValues]
+        );
+      }
+
+      // await connection.commit();
+
+      return { success: true, message: 'Room updated successfully' };
+    } catch (error) {
+      // await connection.rollback();
+      throw error;
+    
+  }
+};
+
+

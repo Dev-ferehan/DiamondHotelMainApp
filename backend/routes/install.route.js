@@ -1,8 +1,8 @@
 import express from 'express'
 const installRoute= express.Router();
 import installController from '../controllers/installController.js'
-console.log("kiosalki from router ")
+import { authenticatedUser } from '../middleware/authentication.js';
 
-installRoute.get('/install',installController)
+installRoute.get('/install',authenticatedUser,installController)
 
 export default installRoute

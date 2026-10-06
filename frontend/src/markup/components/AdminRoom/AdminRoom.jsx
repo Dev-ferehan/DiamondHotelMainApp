@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import styles from "./adminRoom.module.css";
-
+import { getRoomTypeService } from "../../../services/RoomService.js";
 function AdminRoom() {
   const [rooms, setRooms] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState(null);
@@ -13,10 +13,9 @@ function AdminRoom() {
   useEffect(() => {
     const fetchRooms = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8000/api/admin/get-rooms-type",
-        );
-        const data = response.data.rooms || response.data;
+        const response = await getRoomTypeService();
+        console.log(response.rooms);
+        const data = response.rooms;
 
         setRooms(data);
 
@@ -152,11 +151,13 @@ function AdminRoom() {
                       <strong>18/{selectedRoom?.total_rooms} Rooms</strong>
                     </small>
                   </div>
-                  <button
+                  <Link
+                    to="/edit-room"
                     className={`btn ${styles["btn-lime"]} btn-sm px-3 fw-bold`}
+                    style={{ fontSize: "0.85rem" }}
                   >
                     Edit
-                  </button>
+                  </Link>
                 </div>
 
                 {/* Image Gallery */}

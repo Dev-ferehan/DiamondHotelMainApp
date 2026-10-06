@@ -1,30 +1,26 @@
 import query from "../config/db.config.js";
 import bcrypt from "bcrypt";
-export const checkEmailAndPassword = async(email, password) => {
+export const checkEmailAndPassword = async (email, password) => {
+  if (!email || !password) {
+    return { success: false, message: "Invalid email/username or password." };
+  }
 
-    if (!email || !password) {
-      return { success: false, message: "Invalid email/username or password." };
-    }
+  //  Email/Username Format Validation (Regex)
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const isEmail = emailRegex.test(email);
+  const isUsername = email.length >= 3;
 
-  
-    //  Email/Username Format Validation (Regex)
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const isEmail = emailRegex.test(email);
-    const isUsername = email.length >= 3;
-  
-    if (!isEmail && !isUsername) {
-      return { success: false, message: "Invalid email/username or password." };
-    }
-  
-    // 4. Password Security Checks 
-    if (password.length < 6 || password.length > 8) {
-      return { success: false, message: "Password must be between 6 and 8 characters." };
-    }
+  if (!isEmail && !isUsername) {
+    return { success: false, message: "Invalid email/username or password." };
+  }
 
+  // 4. Password Security Checks
+  if (password.length < 6 || password.length > 8) {
+    throw new Error("Password must be between 6 and 8 characters long");
+  }
 
-
-    try {
-        const UserQuery = `
+  try {
+    const UserQuery = `
           SELECT 
           u.id, 
         u.full_name, 
@@ -38,124 +34,98 @@ export const checkEmailAndPassword = async(email, password) => {
           LEFT JOIN staff_profiles sp ON u.id = sp.user_id
           WHERE u.email = ?
         `;
-    
-        const rows = await query(UserQuery, [email]);
-        if (rows.length === 0) {
-          return { success: false, message: "Invalid email/username or password." };
-        }
 
-        const user = rows[0];
-    
-        const isPasswordMatched = await bcrypt.compare(password, user.password);
-    
-        if (!isPasswordMatched) {
-          return { success: false, message: "password is not matched" };
-        }
+    const rows = await query(UserQuery, [email]);
+    if (rows.length === 0) {
+      return { success: false, message: "Invalid email/username or password." };
+    }
 
-        return {
-          success: true,
-          message: "Login successfully",
-          user: {
-            id: user.id,
-            fullName: user.full_name,
-            email: user.email,
-            role: user.role,
-            profile: {
-              phoneNumber: user.phone_number || null,
-              address: user.address || null,
-              gender: user.gender || null
-            }
-          }
-      
-        };
-    
-      } catch (error) {
-        console.error("Database Login Error:", error);
-        return { success: false, message: "Server error, please try again later." };
-      }
+    const user = rows[0];
 
+    const isPasswordMatched = await bcrypt.compare(password, user.password);
 
+    if (!isPasswordMatched) {
+      return { success: false, message: "password is not matched" };
+    }
 
+    return {
+      success: true,
+      message: "Login successfully",
+      user: {
+        id: user.id,
+        fullName: user.full_name,
+        email: user.email,
+        role: user.role,
+        profile: {
+          phoneNumber: user.phone_number || null,
+          address: user.address || null,
+          gender: user.gender || null,
+        },
+      },
+    };
+  } catch (error) {
+    console.error("Database Login Error:", error);
+    return { success: false, message: "Server error, please try again later." };
+  }
+};
 
+export const registerCustomerService = async ({
+  firstName,
+  lastName,
+  email,
+  password,
+  phoneNumber,
+}) => {
+  try {
+    //  Check if email exists
+    const checkEmailQuery = "SELECT id FROM customer WHERE email = ?";
+    const existingUsers = await query(checkEmailQuery, [email]);
 
+    if (existingUsers.length > 0) {
+      return {
+        success: false,
+        message:
+          "Email is already registered. Please login or use a different email.",
+      };
+    }
 
+    // 2. Password  bcrypt Hash
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
-
-  
-  };
-
-
-
-
-  
-  export const registerCustomerService = async ({ firstName, lastName, email, password, phoneNumber }) => {
-    try {
-      //  Check if email exists
-      const checkEmailQuery = "SELECT id FROM customer WHERE email = ?";
-      const existingUsers = await query(checkEmailQuery, [email]);
-  
-      if (existingUsers.length > 0) {
-        return {
-          success: false,
-          message: "Email is already registered. Please login or use a different email."
-        };
-      }
-  
-      // 2. Password  bcrypt Hash
-      const saltRounds = 10;
-      const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-      const insertQuery = `
+    const insertQuery = `
         INSERT INTO customer (first_name, last_name, email, phone_number, password, role)
         VALUES (?, ?, ?, ?, ?, 'customer')
       `;
-  
-      const result= await query(insertQuery, [
+
+    const result = await query(insertQuery, [
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+      hashedPassword,
+    ]);
+    return {
+      success: true,
+      message: "registered successfully.",
+      user: {
+        id: result.insertId,
         firstName,
         lastName,
         email,
         phoneNumber,
-        hashedPassword
-      ]);
-      return {
-        success: true,
-        message: "registered successfully.",
-        user: {
-          id: result.insertId,
-          firstName,
-          lastName,
-          email,
-          phoneNumber,
-          role: "customer"
-        }
-      };
-  
-    } catch (error) {
-      console.error("something went wrong", error.message);
-      throw error;
-    }
-  };
-
-
-
-
-
-
-
-
-
-
+        role: "customer",
+      },
+    };
+  } catch (error) {
+    console.error("something went wrong", error.message);
+    throw error;
+  }
+};
 
 export const registerUser = async (data) => {
   try {
-    const {
-      fullName,
-      email,
-      password,
-      phoneNumber,
-      address,
-      gender,
-    } = data;
+    const { fullName, email, password, phoneNumber, address, gender } = data;
 
     const addUserQuery = `
       INSERT INTO users (full_name, email, password, phone_number, address, gender)
@@ -173,9 +143,9 @@ export const registerUser = async (data) => {
     return userResult;
   } catch (error) {
     console.error("Error in registerUser:", error);
-    return { success: false, message: "Internal server error. Please try again later." };
+    return {
+      success: false,
+      message: "Internal server error. Please try again later.",
+    };
   }
 };
-
-
-
